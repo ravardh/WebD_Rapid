@@ -1,0 +1,18 @@
+#main {
+  display: flex;
+}
+
+#sidebar {
+  width: 20vw;
+  height: 90vh;
+}
+
+#content {
+  width: 80vw;
+}
+
+
+img{
+    object-position: top;
+}
+ 
