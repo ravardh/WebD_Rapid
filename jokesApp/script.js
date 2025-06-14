@@ -3,6 +3,7 @@ async function getJokes() {
     "https://official-joke-api.appspot.com/random_joke"
   );
   const data = await response.json();
+  console.log(response);
   console.log(data);
 
 
