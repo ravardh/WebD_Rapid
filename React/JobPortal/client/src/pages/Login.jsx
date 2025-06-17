@@ -5,8 +5,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({
-    Userid: "", //way of initializing the name components or input types present in the page
-    Password: "",
+    email: "", //way of initializing the name components or input types present in the page
+    password: "",
   });
 
   const handleChange = (e) => {  //every time i am writing anything in the input the function is called and everything is stored
@@ -29,15 +29,15 @@ const Login = () => {
         <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
           <div>
             <label
-              htmlFor="UserID"
+              htmlFor="email"
               className="block text-lg font-semibold text-[#1A3C5A] mb-1"
             >
               User ID
             </label>
             <input
-              type="text"
-              name="Userid"
-              value={loginData.Userid}
+              type="email"
+              name="email"
+              value={loginData.email}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
               onChange={handleChange}
             />
@@ -47,12 +47,12 @@ const Login = () => {
               htmlFor="password"
               className="block text-lg font-semibold text-[#1A3C5A] mb-1"
             >
-              Password
+              password
             </label>
             <input
               type="password"
-              name="Password"
-              value={loginData.Password}
+              name="password"
+              value={loginData.password}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
               onChange={handleChange}
             />

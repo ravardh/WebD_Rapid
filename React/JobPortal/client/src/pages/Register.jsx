@@ -10,10 +10,10 @@ const Register = () => {
     lastName: "",
     email: "",
     phone: "",
-    states: "",
+    state: "",
     address: "",
-    newPassword: "",
-    renewPassword: "",
+    password: "",
+    cfpassword: "",
   });
 
   const handleChange = (e) => {
@@ -46,6 +46,7 @@ const Register = () => {
                   name="firstName"
                   className="w-[14.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                   onChange={handleChange}
+                  value={registerData.firstName}
                 />
               </div>
 
@@ -58,6 +59,7 @@ const Register = () => {
                   name="lastName"
                   className="w-[14.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                   onChange={handleChange}
+                  value={registerData.lastName}
                 />
               </div>
             </div>
@@ -74,6 +76,7 @@ const Register = () => {
                 name="email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                 onChange={handleChange}
+                value={registerData.email}
               />
             </div>
 
@@ -90,20 +93,22 @@ const Register = () => {
                   name="phone"
                   className="w-[16.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                   onChange={handleChange}
+                  value={registerData.phone}
                 />
               </div>
 
               <div className="flex items-center gap-[1.2rem]">
                 <label
-                  htmlFor="states"
+                  htmlFor="state"
                   className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
                 >
                   State:
                 </label>
                 <select
-                  name="states"
+                  name="state"
                   className="border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white w-[14.5rem] px-4 py-2"
                   onChange={handleChange}
+                  value={registerData.state}
                 >
                   <option value="">Select State</option>
                   {state.length ? (
@@ -113,7 +118,7 @@ const Register = () => {
                       </option>
                     ))
                   ) : (
-                    <option value="">--No States Found--</option>
+                    <option value="">--No state Found--</option>
                   )}
                 </select>
               </div>
@@ -131,37 +136,40 @@ const Register = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                 rows="3"
                 onChange={handleChange}
+                value={registerData.address}
               ></textarea>
             </div>
 
             <div className="flex items-center gap-8">
               <label
-                htmlFor="newPassword"
+                htmlFor="password"
                 className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1"
               >
                 Password:
               </label>
               <input
                 type="password"
-                name="newPassword"
+                name="password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                 onChange={handleChange}
-              ></input>
+                value={registerData.password}
+              />
             </div>
 
             <div className="flex items-center gap-8">
               <label
-                htmlFor="renewPassword"
+                htmlFor="cfpassword"
                 className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1"
               >
                 Confirm <br /> Password:
               </label>
               <input
                 type="password"
-                name="renewPassword"
+                name="cfpassword"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                 onChange={handleChange}
-              ></input>
+                value={registerData.cfpassword}
+              />
             </div>
 
             <button
