@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 //import { state } from "../../public/dummy";
 
+import axios from "../config/api";
+
 const state = ["Delhi", "MP", "Haryana", "Chandigarh", "Kolkalta"];
 const Register = () => {
   const navigate = useNavigate();
@@ -23,9 +25,17 @@ const Register = () => {
     setRegisterData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Registered Data:", registerData);
+
+    try {
+      const res = await axios.post("/auth/register", registerData);
+
+       toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

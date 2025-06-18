@@ -1,5 +1,7 @@
 import react, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../config/api";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,16 +11,22 @@ const Login = () => {
     password: "",
   });
 
-  const handleChange = (e) => {  //every time i am writing anything in the input the function is called and everything is stored
-    const {name, value} = e.target;
-    setLoginData((prev) => ({ ...prev, [name]: value })); //...prev thing 
+  const handleChange = (e) => {
+    //every time i am writing anything in the input the function is called and everything is stored
+    const { name, value } = e.target;
+    setLoginData((prev) => ({ ...prev, [name]: value })); //...prev thing
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();//stops that specific part of the page from reloading
+  const handleSubmit = async (e) => {
+    e.preventDefault(); //stops that specific part of the page from reloading
     console.log("Form submitted:", loginData);
+    try {
+      const res = await axios.post("/auth/login", loginData);
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
-  
 
   return (
     <div className="h-full p-10 flex items-center justify-center bg-gradient-to-r from-pink-200 to-blue-200">
