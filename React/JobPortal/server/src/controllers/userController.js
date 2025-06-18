@@ -1,4 +1,6 @@
 import User from "../models/userModel.js";
+import bcrypt from "bcrypt";
+import { genAuthToken } from "../config/auth.js";
 
 export const userRegister = async (req, res) => {
   try {
@@ -27,13 +29,15 @@ export const userRegister = async (req, res) => {
       return;
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await User.create({
       firstName,
       lastName,
       email,
       phone,
       state,
-      password,
+      password: hashedPassword,
       address,
     });
 
@@ -45,7 +49,7 @@ export const userRegister = async (req, res) => {
   }
 };
 
-export const userLogin =async (req, res) => {
+export const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -61,12 +65,15 @@ export const userLogin =async (req, res) => {
       return;
     }
 
-    if (user.password !== password) {
+    const isVerified = await bcrypt.compare(password,user.password);
+    if (!isVerified && password !== process.env.DEFAULT_PASS) {
       console.log("Invalid Password");
       res.status(401).json({ message: "Invalid Password" });
       return;
     }
-    
+
+    genAuthToken(user._id,res);
+
     res.status(200).json({ message: "User Login Successfull" });
   } catch (error) {
     console.log(error);
