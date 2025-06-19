@@ -2,9 +2,11 @@ import react, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../config/api";
 import toast from "react-hot-toast";
+import Loading from "../assets/infinite-spinner.svg";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "", //way of initializing the name components or input types present in the page
@@ -19,12 +21,19 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); //stops that specific part of the page from reloading
+    setLoading(true);
     console.log("Form submitted:", loginData);
     try {
       const res = await axios.post("/auth/login", loginData);
       toast.success(res.data.message);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(
+        `Error ${error?.response?.status || "503"} : ${
+          error?.response?.data?.message || "Service Unavailable"
+        }`
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,13 +88,14 @@ const Login = () => {
             type="submit"
             className="w-full py-3 bg-[#1A3C5A] text-white font-bold rounded-lg hover:bg-[#FF4081] transition-colors duration-200"
           >
-            Login
-          </button>
-          <button
-            type="reset"
-            className="w-full py-3 bg-white border border-[#1A3C5A] text-[#1A3C5A] font-bold rounded-lg hover:bg-[#FF4081] hover:text-white transition-colors duration-200"
-          >
-            Reset
+            {loading ? (
+              <div className="flex gap-3 justify-center items-center h-full">
+                <img src={Loading} alt="" className="h-[1em]" />
+                <span>Logging In ...</span>
+              </div>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
         <div className="text-center mt-2">

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 //import { state } from "../../public/dummy";
+import Loading from "../assets/infinite-spinner.svg";
+import toast from "react-hot-toast";
 
 import axios from "../config/api";
 
 const state = ["Delhi", "MP", "Haryana", "Chandigarh", "Kolkalta"];
 const Register = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [registerData, setRegisterData] = useState({
     firstName: "",
     lastName: "",
@@ -27,14 +30,20 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     console.log("Registered Data:", registerData);
 
     try {
       const res = await axios.post("/auth/register", registerData);
-
-       toast.success(res.data.message);
+      toast.success(res.data.message);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(
+        `Error ${error?.response?.status || "503"} : ${
+          error?.response?.data?.message || "Service Unavailable"
+        }`
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -183,17 +192,17 @@ const Register = () => {
             </div>
 
             <button
-              type="createAccount"
+              type="submit"
               className="w-full py-3 bg-[#1A3C5A] text-white font-bold rounded-lg hover:bg-[#FF4081] transition-colors duration-200"
             >
-              Create Account
-            </button>
-
-            <button
-              type="reset"
-              className="w-full py-3 bg-white border border-[#1A3C5A] text-[#1A3C5A] font-bold rounded-lg hover:bg-[#FF4081] hover:text-white transition-colors duration-200"
-            >
-              Reset
+              {loading ? (
+                <div className="flex gap-3 justify-center items-center h-full">
+                  <img src={Loading} alt="" className="h-[1em]" />
+                  <span>Creating Account ...</span>
+                </div>
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 

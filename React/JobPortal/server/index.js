@@ -20,10 +20,18 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
+
 app.use("/auth", AuthRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the server!" });
+});
+
+app.use((err, req, res, next) => {
+  const message = err.message || "Internal Server Error";
+  const StatusCode = err.statusCode || 500;
+
+  res.status(StatusCode).json({ message });
 });
 
 const port = process.env.PORT || 5000;
