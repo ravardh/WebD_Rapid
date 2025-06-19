@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "../config/api";
 import toast from "react-hot-toast";
 import Loading from "../assets/infinite-spinner.svg";
+import { IoEyeOff, IoEye } from "react-icons/io5";
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "", //way of initializing the name components or input types present in the page
@@ -26,6 +28,7 @@ const Login = () => {
     try {
       const res = await axios.post("/auth/login", loginData);
       toast.success(res.data.message);
+      navigate("/userDashboard")
     } catch (error) {
       toast.error(
         `Error ${error?.response?.status || "503"} : ${
@@ -66,13 +69,25 @@ const Login = () => {
             >
               password
             </label>
-            <input
-              type="password"
-              name="password"
-              value={loginData.password}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
-              onChange={handleChange}
-            />
+            <div className="relative flex items-center">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                name="password"
+                value={loginData.password}
+                className=" w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
+                onChange={handleChange}
+              />
+              <span
+                className="absolute right-1 border-s-2 border-gray-100 p-1 bg-white"
+                onClick={(e) => {
+                  passwordVisible
+                    ? setPasswordVisible(false)
+                    : setPasswordVisible(true);
+                }}
+              >
+                {passwordVisible ? <IoEye /> : <IoEyeOff />}
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <input

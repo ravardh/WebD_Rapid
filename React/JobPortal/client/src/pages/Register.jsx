@@ -10,6 +10,7 @@ const state = ["Delhi", "MP", "Haryana", "Chandigarh", "Kolkalta"];
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [registerData, setRegisterData] = useState({
     firstName: "",
     lastName: "",
@@ -28,9 +29,73 @@ const Register = () => {
     setRegisterData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validate = () => {
+    let isValid = true;
+    const errors = {};
+    if (
+      !/^[a-zA-Z]+$/.test(registerData.firstName) ||
+      registerData.firstName.length < 2 ||
+      (registerData.lastName && !/^[a-zA-Z]+$/.test(registerData.lastName))
+    ) {
+      errors.name =
+        "Please enter a valid name (only letters, at least 3 characters)";
+      isValid = false;
+    }
+    if (!/^[a-zA-Z0-9._]+@gmail.com$/.test(registerData.email)) {
+      errors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    if (
+      !/^[6-9]\d{9}$/.test(registerData.phone) ||
+      registerData.phone.length !== 10
+    ) {
+      errors.phone = "Please enter a valid phone number (10 digits)";
+      isValid = false;
+    }
+    if (!registerData.state) {
+      errors.state = "Please select a state";
+      isValid = false;
+    }
+    if (!registerData.address || registerData.address.length < 10) {
+      errors.address = "Please enter a valid address (at least 10 characters)";
+      isValid = false;
+    }
+
+    if (
+      !registerData.password ||
+      registerData.password.length < 6 ||
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?.,_]).{6,20}$/.test(
+        registerData.password
+      )
+    ) {
+      errors.password =
+        "Password must be at least 6 characters long and contains uppercase letter, lowercase letter, number and special Character";
+      isValid = false;
+    }
+
+    if (registerData.password !== registerData.cfpassword) {
+      errors.cfpassword = "Passwords do not match";
+      isValid = false;
+    }
+
+    // Set error messages
+    setError(errors);
+    if (!isValid) {
+      toast.error("Please fix the errors before submitting");
+    }
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+    // Basic validation
+    if (!validate()) {
+      setLoading(false);
+      return;
+    }
     console.log("Registered Data:", registerData);
 
     try {
@@ -55,140 +120,175 @@ const Register = () => {
             Register
           </h1>
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-            <div className="flex gap-3 ">
-              <div className="flex items-center gap-5 ">
-                <label className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1">
-                  First Name:
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  className="w-[14.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
-                  onChange={handleChange}
-                  value={registerData.firstName}
-                />
-              </div>
+            <div className="grid -gap-2">
+              <div className="flex gap-3 ">
+                <div className="flex items-center gap-5 ">
+                  <label className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1">
+                    First Name:
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    className="w-[14.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
+                    onChange={handleChange}
+                    value={registerData.firstName}
+                  />
+                </div>
 
-              <div className="flex items-center gap-5">
-                <label className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1">
-                  Last Name:
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  className="w-[14.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
-                  onChange={handleChange}
-                  value={registerData.lastName}
-                />
+                <div className="flex items-center gap-5">
+                  <label className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1">
+                    Last Name:
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    className="w-[14.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
+                    onChange={handleChange}
+                    value={registerData.lastName}
+                  />
+                </div>
               </div>
+              {error.name && (
+                <div className="text-red-500 text-sm ">{error.name}</div>
+              )}
             </div>
 
-            <div className="flex items-center gap-10">
-              <label
-                htmlFor="email"
-                className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
-              >
-                Email ID:
-              </label>
-              <input
-                type="email"
-                name="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
-                onChange={handleChange}
-                value={registerData.email}
-              />
+            <div className="grid -gap-2">
+              <div className="flex items-center gap-10">
+                <label
+                  htmlFor="email"
+                  className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
+                >
+                  Email ID:
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
+                  onChange={handleChange}
+                  value={registerData.email}
+                />
+              </div>
+              {error.email && (
+                <div className="text-red-500 text-sm ">{error.email}</div>
+              )}
             </div>
 
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-7">
+              <div className="grid -gap-2">
+                <div className="flex items-center gap-7">
+                  <label
+                    htmlFor="phone"
+                    className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
+                  >
+                    Phone No:
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    className="w-[16.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
+                    onChange={handleChange}
+                    value={registerData.phone}
+                  />
+                </div>
+                {error.phone && (
+                  <div className="text-red-500 text-sm ">{error.phone}</div>
+                )}
+              </div>
+
+              <div className="grid -gap-2">
+                <div className="flex items-center gap-[1.2rem]">
+                  <label
+                    htmlFor="state"
+                    className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
+                  >
+                    State:
+                  </label>
+                  <select
+                    name="state"
+                    className="border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white w-[14.5rem] px-4 py-2"
+                    onChange={handleChange}
+                    value={registerData.state}
+                  >
+                    <option value="">Select State</option>
+                    {state.length ? (
+                      state.map((value, index) => (
+                        <option value={value} key={index}>
+                          {value}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">--No state Found--</option>
+                    )}
+                  </select>
+                </div>
+                {error.state && (
+                  <div className="text-red-500 text-sm ">{error.state}</div>
+                )}
+              </div>
+            </div>
+
+            <div className="grid -gap-2">
+              <div className="flex items-center gap-12">
                 <label
-                  htmlFor="phone"
+                  htmlFor="address"
                   className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
                 >
-                  Phone No:
+                  Address
+                </label>
+                <textarea
+                  name="address"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
+                  rows="3"
+                  onChange={handleChange}
+                  value={registerData.address}
+                ></textarea>
+              </div>
+              {error.address && (
+                <div className="text-red-500 text-sm ">{error.address}</div>
+              )}
+            </div>
+
+            <div className="grid -gap-2">
+              <div className="flex items-center gap-8">
+                <label
+                  htmlFor="password"
+                  className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1"
+                >
+                  Password:
                 </label>
                 <input
-                  type="tel"
-                  name="phone"
-                  className="w-[16.7rem] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
+                  type="password"
+                  name="password"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                   onChange={handleChange}
-                  value={registerData.phone}
+                  value={registerData.password}
                 />
               </div>
+              {error.password && (
+                <div className="text-red-500 text-sm ">{error.password}</div>
+              )}
+            </div>
 
-              <div className="flex items-center gap-[1.2rem]">
+            <div className="grid -gap-2">
+              <div className="flex items-center gap-8">
                 <label
-                  htmlFor="state"
-                  className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
+                  htmlFor="cfpassword"
+                  className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1"
                 >
-                  State:
+                  Confirm <br /> Password:
                 </label>
-                <select
-                  name="state"
-                  className="border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white w-[14.5rem] px-4 py-2"
+                <input
+                  type="text"
+                  name="cfpassword"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
                   onChange={handleChange}
-                  value={registerData.state}
-                >
-                  <option value="">Select State</option>
-                  {state.length ? (
-                    state.map((value, index) => (
-                      <option value={value} key={index}>
-                        {value}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="">--No state Found--</option>
-                  )}
-                </select>
+                  value={registerData.cfpassword}
+                />
               </div>
-            </div>
-
-            <div className="flex items-center gap-12">
-              <label
-                htmlFor="address"
-                className="min-w-fit text-lg font-semibold text-[#1a3c5a] mb-1"
-              >
-                Address
-              </label>
-              <textarea
-                name="address"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
-                rows="3"
-                onChange={handleChange}
-                value={registerData.address}
-              ></textarea>
-            </div>
-
-            <div className="flex items-center gap-8">
-              <label
-                htmlFor="password"
-                className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1"
-              >
-                Password:
-              </label>
-              <input
-                type="password"
-                name="password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
-                onChange={handleChange}
-                value={registerData.password}
-              />
-            </div>
-
-            <div className="flex items-center gap-8">
-              <label
-                htmlFor="cfpassword"
-                className="min-w-fit text-lg font-semibold text-[#1A3C5A] mb-1"
-              >
-                Confirm <br /> Password:
-              </label>
-              <input
-                type="password"
-                name="cfpassword"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF4081] text-[#1A3C5A] bg-white"
-                onChange={handleChange}
-                value={registerData.cfpassword}
-              />
+              {error.cfpassword && (
+                <div className="text-red-500 text-sm ">{error.cfpassword}</div>
+              )}
             </div>
 
             <button
