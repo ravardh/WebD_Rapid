@@ -28,7 +28,13 @@ const Login = () => {
     try {
       const res = await axios.post("/auth/login", loginData);
       toast.success(res.data.message);
-      navigate("/userDashboard")
+      // console.log(res.data.data);
+      sessionStorage.setItem("user", JSON.stringify(res.data.data));
+      res.data.data.role === "Admin"
+        ? navigate("/adminDashboard")
+        : res.data.data.role === "User"
+        ? navigate("/userDashboard")
+        : navigate("/recruiterDashboard");
     } catch (error) {
       toast.error(
         `Error ${error?.response?.status || "503"} : ${
