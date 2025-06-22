@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import Sidebar from '../../components/UserDashboard/Sidebar'
-import MainContent from '../../components/UserDashboard/MainContent'
+import Overview from '../../components/UserDashboard/Overview'
+import Profile from '../../components/UserDashboard/Profile'
+import SavedJobs from '../../components/UserDashboard/SavedJobs'
+import Applications from '../../components/UserDashboard/Applications'
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')
@@ -8,7 +11,21 @@ const UserDashboard = () => {
   return (
     <div className="flex h-[calc(100vh-100px)] bg-gray-100 overflow-hidden">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <MainContent activeTab={activeTab} />
+      
+      <div className="w-4/5 h-full overflow-auto scrollbar-hide">
+        {
+          activeTab === "overview" && <Overview />
+        }
+        {
+          activeTab === "profile" && <Profile />
+        }
+        {
+          activeTab === "applications" && <Applications />
+        }
+        {
+          activeTab === "saved" && <SavedJobs />
+        }
+      </div>
     </div>
   )
 }

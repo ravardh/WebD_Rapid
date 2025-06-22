@@ -9,9 +9,6 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { id: 'saved', label: 'Saved Jobs', icon: FaBookmark },
   ]
 
-
- 
-
   const handleLogout = () => {
     // Add logout logic here
     console.log('Logging out...')
