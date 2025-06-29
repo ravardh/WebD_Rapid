@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { genAuthToken } from "../utils/auth.js";
+import getCloudinary from "../config/cloudinary.js";
 
 export const userRegister = async (req, res, next) => {
   try {
@@ -88,4 +89,55 @@ export const userLogin = async (req, res, next) => {
 
 export const userLogout = (req, res) => {
   res.json({ message: "User Logout Sucessfully" });
+};
+
+export const userUpdate = async (req, res, next) => {
+  try {
+    const { firstName, lastName, phone } = req.body;
+
+    if (!firstName || !lastName || !phone) {
+      const error = new Error("All fields are required");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    let photo;
+    if (req.file) {
+      try {
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+        const cloudinary = getCloudinary();
+        const result = await cloudinary.uploader.upload(dataURI);
+        photo = result.secure_url;
+      } catch (err) {
+        const error = new Error("Image upload failed: " + err.message);
+        error.statusCode = 500;
+        return next(error);
+      }
+    }
+
+    // const updateFields = { firstName, lastName, phone };
+    // if (photo) updateFields.photo = photo;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        firstName,
+        lastName,
+        phone,
+        photo: photo || req.user.photo,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    res.json({ message: "User Updated Successfully", data: updatedUser });
+  } catch (error) {
+    next(error);
+  }
 };

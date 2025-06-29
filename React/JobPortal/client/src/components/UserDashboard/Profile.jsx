@@ -5,6 +5,10 @@ import UserEditModal from "./Modals/UserEditModal";
 const Profile = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
 
+  const [userData, setUserData] = useState(
+    JSON.parse(sessionStorage.getItem("user")) || {}
+  );
+
   return (
     <>
       <div className="p-6">
@@ -19,21 +23,27 @@ const Profile = () => {
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center mb-6">
-            <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
+            <div className="w-20 h-20 bg-gray-200 rounded-full">
+              <img
+                src={userData.photo || "https://via.placeholder.com/150"}
+                alt="User Avatar"
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
             <div className="ml-4">
-              <h3 className="text-xl font-semibold">John Doe</h3>
-              <p className="text-gray-600">Frontend Developer</p>
+              <h3 className="text-xl font-semibold">{userData.firstName} {userData.lastName}</h3>
+              <p className="text-gray-600">{userData.role}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold mb-2">Contact Information</h4>
-              <p className="text-gray-600">Email: john@example.com</p>
-              <p className="text-gray-600">Phone: +1 234 567 890</p>
+              <p className="text-gray-600">Email: {userData.email}</p>
+              <p className="text-gray-600">Phone: {userData.phone}</p>
             </div>
             <div>
               <h4 className="font-semibold mb-2">Location</h4>
-              <p className="text-gray-600">San Francisco, CA</p>
+              <p className="text-gray-600">{userData.location || "San Francisco, CA"}</p>
             </div>
           </div>
         </div>
