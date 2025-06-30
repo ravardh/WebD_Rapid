@@ -87,8 +87,16 @@ export const userLogin = async (req, res, next) => {
   }
 };
 
-export const userLogout = (req, res) => {
-  res.json({ message: "User Logout Sucessfully" });
+export const userLogout = (req, res,next) => {
+  try {
+    res.cookie("secret", "", {
+      expires: new Date(Date.now()),
+    });
+
+    res.status(200).json({ message: "Logout Successfully" });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const userUpdate = async (req, res, next) => {
