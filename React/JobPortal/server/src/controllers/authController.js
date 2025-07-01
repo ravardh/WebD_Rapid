@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { genAuthToken } from "../utils/auth.js";
 import getCloudinary from "../config/cloudinary.js";
 
-export const userRegister = async (req, res, next) => {
+export const Register = async (req, res, next) => {
   try {
     const { firstName, lastName, email, phone, role, password } = req.body;
 
@@ -45,7 +45,7 @@ export const userRegister = async (req, res, next) => {
   }
 };
 
-export const userLogin = async (req, res, next) => {
+export const Login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -87,7 +87,7 @@ export const userLogin = async (req, res, next) => {
   }
 };
 
-export const userLogout = (req, res,next) => {
+export const Logout = (req, res, next) => {
   try {
     res.cookie("secret", "", {
       expires: new Date(Date.now()),
@@ -99,7 +99,7 @@ export const userLogout = (req, res,next) => {
   }
 };
 
-export const userUpdate = async (req, res, next) => {
+export const Update = async (req, res, next) => {
   try {
     const { firstName, lastName, phone } = req.body;
 

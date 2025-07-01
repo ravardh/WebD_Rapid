@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import ViewJobModal from "./Modals/ViewJobModal";
 import EditJobModal from "./Modals/EditJobModal";
@@ -88,6 +88,18 @@ const PostJobs = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isAddJobModalOpen, setAddJobModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
+
+  const [allJobs, setAllJobs] = useState([]);
+
+  const fetchAllJobs = () => {
+    setAllJobs(PostedJobs);
+    //api call to backend
+  };
+
+ useEffect(() => {
+  fetchAllJobs();
+}, [isEditModalOpen, isAddJobModalOpen]);
+
 
   return (
     <>
