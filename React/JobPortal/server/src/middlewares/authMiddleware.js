@@ -10,6 +10,7 @@ export const Protect = async (req, res, next) => {
       return next(error);
     }
 
+   // console.log("token ", token);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const currentUser = await User.findById(decoded.id);
 
@@ -18,7 +19,7 @@ export const Protect = async (req, res, next) => {
       error.statusCode = 401;
       return next(error);
     }
-
+  //  console.log("Current User:", currentUser);
     req.user = currentUser;
     next();
   } catch (error) {
@@ -26,7 +27,22 @@ export const Protect = async (req, res, next) => {
   }
 };
 
-export const isRecruiter = () => {
+export const isRecruiter = (req, res, next) => {
+  try {
+    console.log(req.user.role);
+    if (!req.user.role === "Recruiter") {
+      const error = new Error("Unauthorized");
+      error.statusCode = 401;
+      return next(error);
+    }
+   // console.log("Recruiter Confirmed");
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const isUser = (req, res, next) => {
   try {
     if (!req.user.role === "Recruiter") {
       const error = new Error("Unauthorized");
@@ -40,21 +56,7 @@ export const isRecruiter = () => {
   }
 };
 
-export const isUser = () => {
-  try {
-    if (!req.user.role === "Recruiter") {
-      const error = new Error("Unauthorized");
-      error.statusCode = 401;
-      return next(error);
-    }
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const isAdmin = () => {
+export const isAdmin = (req, res, next) => {
   try {
     if (!req.user.role === "Recruiter") {
       const error = new Error("Unauthorized");

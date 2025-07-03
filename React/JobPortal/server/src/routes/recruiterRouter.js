@@ -1,11 +1,18 @@
 import express from "express";
 import { Protect, isRecruiter } from "../middlewares/authMiddleware.js";
 
-import { addJob, viewAllJob } from "../controllers/recruiterController.js";
+import {
+  addJob,
+  editJob,
+  viewAllJob,
+  deleteJob,
+} from "../controllers/recruiterController.js";
 
 const router = express.Router();
 
 router.post("/addJob", Protect, isRecruiter, addJob);
-router.post("/viewAllJob", Protect, isRecruiter, viewAllJob);
+router.get("/viewAllJob", Protect, isRecruiter, viewAllJob);
+router.put("/editJob/:id", Protect, isRecruiter, editJob);
+router.delete("/deleteJob/:id", Protect, isRecruiter, deleteJob);
 
 export default router;

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SlClose } from "react-icons/sl";
+import axios from "../../../config/api";
+import { toast } from "react-hot-toast";
 
 const EditJobModal = ({ isOpen, isClose, selectedJob }) => {
   const [formData, setFormData] = useState({
@@ -47,9 +49,18 @@ const EditJobModal = ({ isOpen, isClose, selectedJob }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Job Saved");
+    try {
+      const res = await axios.put(
+        `/recruiter/editJob/${selectedJob._id}`,
+        formData
+      );
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
+    handleCancel();
   };
 
   const handleCancel = () => {
