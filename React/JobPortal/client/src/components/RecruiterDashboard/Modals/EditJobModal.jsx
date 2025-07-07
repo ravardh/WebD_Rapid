@@ -3,7 +3,10 @@ import { SlClose } from "react-icons/sl";
 import axios from "../../../config/api";
 import { toast } from "react-hot-toast";
 
+
 const EditJobModal = ({ isOpen, isClose, selectedJob }) => {
+  
+
   const [formData, setFormData] = useState({
     jobTitle: "",
     company: "",

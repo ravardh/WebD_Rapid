@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import UserEditModal from "./Modals/UserEditModal";
+import { useAuth } from "../../context/AuthContext";
 
 const Profile = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -9,6 +10,9 @@ const Profile = () => {
     JSON.parse(sessionStorage.getItem("user")) || {}
   );
 
+  useEffect(() => {
+    setUserData(user);
+  }, [user]);
   return (
     <>
       <div className="p-6">
@@ -31,7 +35,9 @@ const Profile = () => {
               />
             </div>
             <div className="ml-4">
-              <h3 className="text-xl font-semibold">{userData.firstName} {userData.lastName}</h3>
+              <h3 className="text-xl font-semibold">
+                {userData.firstName} {userData.lastName}
+              </h3>
               <p className="text-gray-600">{userData.role}</p>
             </div>
           </div>
@@ -43,7 +49,9 @@ const Profile = () => {
             </div>
             <div>
               <h4 className="font-semibold mb-2">Location</h4>
-              <p className="text-gray-600">{userData.location || "San Francisco, CA"}</p>
+              <p className="text-gray-600">
+                {userData.location || "San Francisco, CA"}
+              </p>
             </div>
           </div>
         </div>

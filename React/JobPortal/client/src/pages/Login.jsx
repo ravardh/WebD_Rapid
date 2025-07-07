@@ -4,8 +4,11 @@ import axios from "../config/api";
 import toast from "react-hot-toast";
 import Loading from "../assets/infinite-spinner.svg";
 import { IoEyeOff, IoEye } from "react-icons/io5";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { setUser, setIsLogin, setIsAdmin, setIsRecruiter } = useAuth();
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -28,13 +31,16 @@ const Login = () => {
     try {
       const res = await axios.post("/auth/login", loginData);
       toast.success(res.data.message);
-      // console.log(res.data.data);
       sessionStorage.setItem("user", JSON.stringify(res.data.data));
+      //call Auth Context
+      setUser(res.data.data);
+      setIsLogin(true);
+      //Decide the type of user
       res.data.data.role === "Admin"
-        ? navigate("/adminDashboard")
+        ? (setIsAdmin(true), navigate("/adminDashboard"))
         : res.data.data.role === "User"
         ? navigate("/userDashboard")
-        : navigate("/recruiterDashboard");
+        : (setIsRecruiter(true), navigate("/recruiterDashboard"));
     } catch (error) {
       toast.error(
         `Error ${error?.response?.status || "503"} : ${
@@ -58,7 +64,7 @@ const Login = () => {
               htmlFor="email"
               className="block text-lg font-semibold text-[#1A3C5A] mb-1"
             >
-              User ID
+              Email
             </label>
             <input
               type="email"

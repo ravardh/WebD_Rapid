@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/image.png";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  
+  const {
+    user,
+    setUser,
+    isLogin,
+    isAdmin,
+    isRecruiter,
+    setIsLogin,
+    setIsAdmin,
+    setIsRecruiter,
+  } = useAuth();
+
   const navigate = useNavigate();
+
+  const handleClick = () => {
+    isRecruiter
+      ? navigate("/recruiterDashboard")
+      : isAdmin
+      ? navigate("/adminDashboard")
+      : navigate("/userDashboard");
+  };
 
   return (
     <>
@@ -24,14 +43,36 @@ const Navbar = () => {
             Contact
           </NavLink>
         </div>
-        <div className="flex gap-3">
-          <button className="py-4 border px-13 bg-[#F54677] text-white hover:bg-white hover:text-black rounded-[20px]" onClick={()=>navigate("/register")}>
-            Register
+
+        {user ? (
+          <button
+            className="py-2 border px-4 bg-[#F54677] text-white hover:bg-white hover:text-black rounded-xl flex gap-2 justify-center items-center"
+            onClick={handleClick}
+          >
+            {" "}
+            <img
+              src={user.photo}
+              alt=""
+              className="h-10 w-10 object-cover rounded-full"
+            />
+            <span>My Profile</span>
           </button>
-          <button className="py-4 px-8 border hover:bg-[#F54677] hover:text-white rounded-[20px]"onClick={()=>navigate("/login")}>
-            Login
-          </button>
-        </div>
+        ) : (
+          <div className="flex gap-3">
+            <button
+              className="py-4 border px-13 bg-[#F54677] text-white hover:bg-white hover:text-black rounded-[20px]"
+              onClick={() => navigate("/register")}
+            >
+              Register
+            </button>
+            <button
+              className="py-4 px-8 border hover:bg-[#F54677] hover:text-white rounded-[20px]"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
