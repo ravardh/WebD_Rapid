@@ -7,8 +7,7 @@ const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [appliedJob, setAppliedJob] = useState(null);
-
+  
   const fetchAllJobs = async () => {
     try {
       const res = await axios.get("/public/allJobs");
@@ -28,11 +27,7 @@ const Jobs = () => {
     setModalOpen(true);
   };
 
-  const handleApply = (job) => {
-    setAppliedJob(job);
-    setModalOpen(false);
-    alert(`Applied for: ${job.jobTitle} at ${job.company}`);
-  };
+  
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -67,7 +62,7 @@ const Jobs = () => {
         isOpen={isModalOpen}
         isClose={() => setModalOpen(false)}
         job={selectedJob}
-        onApply={handleApply}
+        
       />
     </div>
   );

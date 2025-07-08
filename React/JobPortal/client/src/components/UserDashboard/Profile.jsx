@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const Profile = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const { user } = useAuth();
 
   const [userData, setUserData] = useState(
     JSON.parse(sessionStorage.getItem("user")) || {}
