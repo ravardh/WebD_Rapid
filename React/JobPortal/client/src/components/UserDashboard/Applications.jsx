@@ -5,13 +5,14 @@ import toast from "react-hot-toast";
 const Applications = () => {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("applied");
 
   const fetchAppliedJobs = async () => {
     try {
       const res = await axios.get("/user/allAppliedJobs");
       setJobs(res.data.data);
-      setFilteredJobs(res.data.data);
+      // Apply the default "applied" filter
+      setFilteredJobs(res.data.data.filter((job) => job.status === "applied"));
     } catch (error) {
       console.log(error.response);
 
@@ -26,8 +27,9 @@ const Applications = () => {
   const handleWithdraw = async (applicationId) => {
     if (window.confirm("Are you sure you want to withdraw this application?")) {
       try {
-        //Api Call
-        console.log("Withdraw button clicked");
+        const res = await axios.patch(`/user/withdraw/${applicationId}`);
+        setJobs(res.data.data);
+        setFilteredJobs(res.data.data || []);
       } catch (error) {
         toast.error("Failed to withdraw application");
       }
@@ -35,11 +37,9 @@ const Applications = () => {
   };
 
   const filterJobs = (jobsArray, filter) => {
-    if (filter === "all") {
-      setFilteredJobs(jobsArray);
-    } else {
-      setFilteredJobs(jobsArray.filter((job) => job.status === filter));
-    }
+    filter === "all"
+      ? setFilteredJobs(jobsArray)
+      : setFilteredJobs(jobsArray.filter((job) => job.status === filter));
   };
 
   const handleStatusFilter = (status) => {
@@ -47,7 +47,6 @@ const Applications = () => {
     filterJobs(jobs, status);
   };
 
-  console.log(jobs);
   useEffect(() => {
     fetchAppliedJobs();
   }, []);
