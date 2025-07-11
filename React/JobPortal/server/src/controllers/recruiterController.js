@@ -1,3 +1,4 @@
+import AppliedJob from "../models/appliedJobs.js";
 import Job from "../models/jobModel.js";
 
 export const addJob = async (req, res, next) => {
@@ -135,6 +136,34 @@ export const deleteJob = async (req, res, next) => {
     await Job.findByIdAndDelete(jobId);
 
     res.status(200).json({ message: "Job Removed Succesfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllApplications = async (req, res, next) => {
+  try {
+    const recruiter = req.user;
+
+    if (!recruiter) {
+      const error = new Error("Recruiter not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    console.log("Recruiter ID:", recruiter._id);
+    
+    const appliedJob = await AppliedJob.find({ recruiterId: recruiter._id })
+      .populate("jobId")
+      .populate("userId");
+
+    if (!appliedJob || appliedJob.length === 0) {
+      const error = new Error("No applications found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    res.status(200).json({ data: appliedJob });
   } catch (error) {
     next(error);
   }

@@ -12,7 +12,7 @@ const appliedJobSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    recruiterID: {
+    recruiterId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
