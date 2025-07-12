@@ -15,9 +15,9 @@ export const JobApply = async (req, res, next) => {
       return next(error);
     }
 
-    const RecruiterID = JobDetails.userid;
+    const recruiterId = JobDetails.userid;
 
-    const recruiterDetails = await User.findById(RecruiterID);
+    const recruiterDetails = await User.findById(recruiterId);
 
     if (!recruiterDetails) {
       const error = new Error("Recruiter Not Found");
@@ -40,7 +40,7 @@ export const JobApply = async (req, res, next) => {
     const appliedJob = {
       jobId: JobId,
       userId: UserId,
-      recruiterID: RecruiterID,
+      recruiterId: recruiterId,
     };
 
     const appliedJobDetails = await AppliedJob.create(appliedJob);
@@ -65,9 +65,9 @@ export const JobSave = async (req, res, next) => {
       return next(error);
     }
 
-    const RecruiterID = JobDetails.userid;
+    const recruiterId = JobDetails.userid;
 
-    const recruiterDetails = await User.findById(RecruiterID);
+    const recruiterDetails = await User.findById(recruiterId);
 
     if (!recruiterDetails) {
       const error = new Error("Recruiter Not Found");
@@ -90,7 +90,7 @@ export const JobSave = async (req, res, next) => {
     const appliedJob = {
       jobId: JobId,
       userId: UserId,
-      recruiterID: RecruiterID,
+      recruiterId: recruiterId,
       status: "saved", // Set the status to 'saved'
     };
 
@@ -224,7 +224,7 @@ export const AllAppliedJobs = async (req, res, next) => {
       status: { $ne: "saved" }, //$ne means Not Equal to
     })
       .populate("jobId")
-      .populate("recruiterID");
+      .populate("recruiterId");
 
     if (!appliedJobs || appliedJobs.length === 0) {
       const error = new Error("No applied jobs found");
@@ -249,7 +249,7 @@ export const AllSavedJobs = async (req, res, next) => {
       status: "saved",
     })
       .populate("jobId")
-      .populate("recruiterID");
+      .populate("recruiterId");
 
     if (!savedJobs || savedJobs.length === 0) {
       const error = new Error("No saved jobs found");

@@ -45,18 +45,19 @@ const Navbar = () => {
         </div>
 
         {user ? (
-          <button
-            className="py-2 border px-4 bg-[#F54677] text-white hover:bg-white hover:text-black rounded-xl flex gap-2 justify-center items-center"
-            onClick={handleClick}
-          >
-            {" "}
+          <div className="flex gap-3">
             <img
               src={user.photo}
               alt=""
               className="h-10 w-10 object-cover rounded-full"
             />
-            <span>My Profile</span>
-          </button>
+            <button
+              className="py-2 border px-4 bg-[#F54677] text-white hover:bg-white hover:text-black rounded-xl flex gap-2 justify-center items-center"
+              onClick={handleClick}
+            >
+              {user.firstName + " " + user.lastName}
+            </button>
+          </div>
         ) : (
           <div className="flex gap-3">
             <button

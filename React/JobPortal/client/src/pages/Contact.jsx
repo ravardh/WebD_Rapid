@@ -4,7 +4,12 @@ import toast from "react-hot-toast";
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 const Contact = () => {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+    subject: "",
+  });
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -17,9 +22,12 @@ const Contact = () => {
 
     try {
       const res = await axios.post("public/submitContactForm", form);
-      toast.success(res.data.message);
+      toast.success(
+        res.data.message,
+        `${res.data.emailSent ? "Email Sent" : "Email Sending Error"}`
+      );
       setSubmitted(true);
-      setForm({ name: "", email: "", message: "" });
+      setForm({ name: "", email: "", message: "", subject: "" });
     } catch (error) {
       toast.error(error.message);
     }
@@ -61,6 +69,20 @@ const Contact = () => {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="you@email.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Subject
+            </label>
+            <input
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+              required
+              rows="4"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="What is it about?"
             />
           </div>
           <div>

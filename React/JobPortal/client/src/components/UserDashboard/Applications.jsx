@@ -186,8 +186,8 @@ const Applications = () => {
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
                     <span className="font-medium">Recruiter:</span>{" "}
-                    {application.recruiterID.firstName}{" "}
-                    {application.recruiterID.lastName}
+                    {application.recruiterId.firstName}{" "}
+                    {application.recruiterId.lastName}
                   </p>
                 </div>
                 <div className="ml-4 flex flex-col items-end gap-5">
