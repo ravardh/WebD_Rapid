@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaSearch, FaUserTie, FaRocket, FaHandshake } from 'react-icons/fa';
-import heroImg from '../assets/image.png'; // Adjust path if needed
+import heroImg from '../assets/logo.png'; // Adjust path if needed
 
 const About = () => {
   return (
