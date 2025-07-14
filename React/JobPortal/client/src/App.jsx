@@ -12,6 +12,7 @@ import UserDashboard from "./pages/Dashboard/UserDashboard";
 import RecruiterDashboard from "./pages/Dashboard/RecruiterDashboard";
 import Admindashboard from "./pages/Dashboard/Admindashboard";
 import NotFound from "./pages/NotFound";
+import ChangePassword from "./pages/ChangePassword";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/changePassword" element={<ChangePassword />} />
           <Route path="/userDashboard" element={<UserDashboard />} />
           <Route path="/recruiterDashboard" element={<RecruiterDashboard />} />
           <Route path="/adminDashboard" element={<Admindashboard />} />

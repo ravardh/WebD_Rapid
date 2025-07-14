@@ -101,15 +101,27 @@ const Login = () => {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="rememMe"
-              className="h-4 w-4 accent-[#FF4081]"
-            />
-            <label htmlFor="rememMe" className="text-sm text-gray-500">
-              Remember Me
-            </label>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="rememMe"
+                className="h-4 w-4 accent-[#FF4081]"
+              />
+              <label htmlFor="rememMe" className="text-sm text-gray-500">
+                Remember Me
+              </label>
+            </div>
+
+            <button
+              className="text-[#FF4081] hover:underline font-semibold"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/changePassword");
+              }}
+            >
+              Forgot Password?
+            </button>
           </div>
           <button
             type="submit"
