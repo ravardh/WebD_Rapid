@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@plugin "flyonui" {
+  themes: light --default, dark, gourmet, corporate, ghibli, luxury, slack, soft,
+    valorant,vscode;
+}
+@import "flyonui/variants.css";
+@source "./node_modules/flyonui/flyonui.js";
