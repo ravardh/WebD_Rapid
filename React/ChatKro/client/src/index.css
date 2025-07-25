@@ -1,8 +1,61 @@
 @import "tailwindcss";
 
-@plugin "flyonui" {
-  themes: light --default, dark, gourmet, corporate, ghibli, luxury, slack, soft,
-    valorant,vscode;
+body {
+  font-family: var(--font-sans);
 }
+
+@plugin "flyonui" {
+  themes: light --default, dark, gourmet, corporate, ghibli, luxury, pastel,
+    slack, soft, spotify, valorant, vscode;
+}
+
+[data-theme="light"] {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="dark"] {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="gourmet"] {
+  --font-sans: "Rubik", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="corporate"] {
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="ghibli"] {
+  --font-sans: "Amaranth", ui-sans-serif, system-ui, cursive;
+}
+
+[data-theme="luxury"] {
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="pastel"] {
+  --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="slack"] {
+  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="soft"] {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="spotify"] {
+  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="valorant"] {
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="vscode"] {
+  --font-sans: "Fira Code", ui-monospace, monospace;
+}
+
 @import "flyonui/variants.css";
 @source "./node_modules/flyonui/flyonui.js";

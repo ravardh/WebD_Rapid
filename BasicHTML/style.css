@@ -1,3 +1,8 @@
+:root{
+  --aadisFavColor : red;
+}
+
+
 #bulb,
 #bulb2 {
   width: 50px;
@@ -9,4 +14,14 @@
 
 .glow {
   background-color: yellow;
+}
+
+
+button{
+  background-color: var(--aadisFavColor)
+}
+
+
+input[type='text']{
+  background-color: blue;
 }
