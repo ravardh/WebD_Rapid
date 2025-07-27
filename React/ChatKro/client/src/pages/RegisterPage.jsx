@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { FcGoogle } from "react-icons/fc";
+import api from "../config/api";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const { theme } = useTheme();
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+  const navigate = useNavigate();
+  const [registerData, setRegisterData] = useState({
+    fullName: "",
+    userName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -15,10 +18,11 @@ const RegisterPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
+    setRegisterData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
@@ -35,48 +39,61 @@ const RegisterPage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
+    if (!registerData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
     }
 
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
+    if (!registerData.userName.trim()) {
+      newErrors.userName = "Username is required";
+    } else if (registerData.userName.length < 3) {
+      newErrors.userName = "Username must be at least 3 characters";
+    } else if (!/^[a-zA-Z0-9_]+$/.test(registerData.userName)) {
+      newErrors.userName =
+        "Username can only contain letters, numbers, and underscores";
     }
 
-    if (!formData.email.trim()) {
+    if (!registerData.email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/\S+@\S+\.\S+/.test(registerData.email)) {
       newErrors.email = "Email is invalid";
     }
 
-    if (!formData.password) {
+    if (!registerData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
+    } else if (registerData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
 
-    if (!formData.confirmPassword) {
+    if (!registerData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
+    } else if (registerData.password !== registerData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    if (!formData.agreeToTerms) {
+    if (!registerData.agreeToTerms) {
       newErrors.agreeToTerms = "You must agree to the terms and conditions";
     }
-
-    return newErrors;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = validateForm();
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log("Registration attempt:", formData);
-      // Add registration logic here
-    } else {
-      setErrors(newErrors);
+    setLoading(true);
+    if (!validateForm()) {
+      setLoading(false);
+      console.log("Form validation failed");
+      return;
+    }
+    console.log("Form is valid, submitting data:", registerData);
+    try {
+      const res = await api.post("/auth/register", registerData);
+      toast.success(res.data.message);
+      navigate("/login");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,53 +114,52 @@ const RegisterPage = () => {
         <div className="card bg-base-100 shadow-2xl">
           <div className="card-body">
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Name Inputs */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="form-control">
+              {/* Full Name Input */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-sans">Full Name</span>
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={registerData.fullName}
+                  onChange={handleInputChange}
+                  className={`input input-bordered w-full font-sans ${
+                    errors.fullName ? "input-error" : ""
+                  }`}
+                  placeholder="John Doe"
+                />
+                {errors.fullName && (
                   <label className="label">
-                    <span className="label-text font-sans">First Name</span>
+                    <span className="label-text-alt text-error font-sans">
+                      {errors.fullName}
+                    </span>
                   </label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className={`input input-bordered w-full font-sans ${
-                      errors.firstName ? "input-error" : ""
-                    }`}
-                    placeholder="John"
-                  />
-                  {errors.firstName && (
-                    <label className="label">
-                      <span className="label-text-alt text-error font-sans">
-                        {errors.firstName}
-                      </span>
-                    </label>
-                  )}
-                </div>
+                )}
+              </div>
 
-                <div className="form-control">
+              {/* Username Input */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-sans">Username</span>
+                </label>
+                <input
+                  type="text"
+                  name="userName"
+                  value={registerData.userName}
+                  onChange={handleInputChange}
+                  className={`input input-bordered w-full font-sans ${
+                    errors.userName ? "input-error" : ""
+                  }`}
+                  placeholder="johndoe123"
+                />
+                {errors.userName && (
                   <label className="label">
-                    <span className="label-text font-sans">Last Name</span>
+                    <span className="label-text-alt text-error font-sans">
+                      {errors.userName}
+                    </span>
                   </label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className={`input input-bordered w-full font-sans ${
-                      errors.lastName ? "input-error" : ""
-                    }`}
-                    placeholder="Doe"
-                  />
-                  {errors.lastName && (
-                    <label className="label">
-                      <span className="label-text-alt text-error font-sans">
-                        {errors.lastName}
-                      </span>
-                    </label>
-                  )}
-                </div>
+                )}
               </div>
 
               {/* Email Input */}
@@ -154,7 +170,7 @@ const RegisterPage = () => {
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
+                  value={registerData.email}
                   onChange={handleInputChange}
                   className={`input input-bordered w-full font-sans ${
                     errors.email ? "input-error" : ""
@@ -178,7 +194,7 @@ const RegisterPage = () => {
                 <input
                   type="password"
                   name="password"
-                  value={formData.password}
+                  value={registerData.password}
                   onChange={handleInputChange}
                   className={`input input-bordered w-full font-sans ${
                     errors.password ? "input-error" : ""
@@ -202,7 +218,7 @@ const RegisterPage = () => {
                 <input
                   type="password"
                   name="confirmPassword"
-                  value={formData.confirmPassword}
+                  value={registerData.confirmPassword}
                   onChange={handleInputChange}
                   className={`input input-bordered w-full font-sans ${
                     errors.confirmPassword ? "input-error" : ""
@@ -224,7 +240,7 @@ const RegisterPage = () => {
                   <input
                     type="checkbox"
                     name="agreeToTerms"
-                    checked={formData.agreeToTerms}
+                    checked={registerData.agreeToTerms}
                     onChange={handleInputChange}
                     className={`checkbox checkbox-primary ${
                       errors.agreeToTerms ? "checkbox-error" : ""
@@ -261,17 +277,7 @@ const RegisterPage = () => {
               </div>
             </form>
 
-            {/* Divider */}
-            <div className="divider font-sans">Or sign up with</div>
-
-            {/* Social Registration */}
-            
-              <button className="btn btn-outline font-sans flex items-center justify-center m-2">
-                <FcGoogle className="text-xl" />
-                Continue with Google
-              </button>
-            
-
+           
             {/* Login Link */}
             <div className="text-center mt-2">
               <p className="text-base-content/70 font-sans">

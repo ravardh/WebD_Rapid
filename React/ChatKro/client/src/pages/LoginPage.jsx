@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { FcGoogle } from "react-icons/fc";
+import api from "../config/api";
+import toast from "react-hot-toast";
+import { useGoogleAuth } from "../config/googleAuth";
 
 const LoginPage = () => {
   const { theme } = useTheme();
-  const [formData, setFormData] = useState({
+  const { isLoading, error, isInitialized, signInWithGoogle } = useGoogleAuth();
+  const [loginData, setLoginData] = useState({
     email: "",
     password: "",
     rememberMe: false,
@@ -13,16 +17,40 @@ const LoginPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
+    setLoginData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempt:", formData);
-    // Add login logic here
+    console.log("Login data submitted:", loginData);
+
+    try {
+      const res = await api.post("/auth/login", loginData);
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+    }
+  };
+
+  const handleGoogleSuccess = async (userData) => {
+    try {
+      console.log("Google login success:", userData);
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Google login failed. Please try again.");
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    console.error("Google login failed:", error);
+    toast.error("Google login failed. Please try again.");
+  };
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle(handleGoogleSuccess, handleGoogleFailure);
   };
 
   return (
@@ -50,7 +78,7 @@ const LoginPage = () => {
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
+                  value={loginData.email}
                   onChange={handleInputChange}
                   className="input input-bordered w-full font-sans"
                   placeholder="Enter your email"
@@ -66,13 +94,12 @@ const LoginPage = () => {
                 <input
                   type="password"
                   name="password"
-                  value={formData.password}
+                  value={loginData.password}
                   onChange={handleInputChange}
                   className="input input-bordered w-full font-sans"
                   placeholder="Enter your password"
                   required
                 />
-                
               </div>
 
               {/* Remember Me */}
@@ -81,7 +108,7 @@ const LoginPage = () => {
                   <input
                     type="checkbox"
                     name="rememberMe"
-                    checked={formData.rememberMe}
+                    checked={loginData.rememberMe}
                     onChange={handleInputChange}
                     className="checkbox checkbox-primary"
                   />
@@ -111,11 +138,29 @@ const LoginPage = () => {
             {/* Divider */}
             <div className="divider font-sans">Or continue with</div>
 
-            {/* Social Login */}
-            <button className="btn btn-outline font-sans flex items-center justify-center gap-2 m-2">
-              <FcGoogle className="text-xl" />
-              Continue with Google
-            </button>
+            {/* Google Login */}
+            {error ? (
+              <button
+                className="btn btn-outline btn-error font-sans flex items-center justify-center gap-2 m-2 w-full"
+                disabled
+              >
+                <FcGoogle className="text-xl" />
+                {error}
+              </button>
+            ) : (
+              <button
+                onClick={handleGoogleSignIn}
+                className="btn btn-outline font-sans flex items-center justify-center gap-2 m-2 w-full"
+                disabled={!isInitialized || isLoading}
+              >
+                <FcGoogle className="text-xl" />
+                {isLoading
+                  ? "Loading..."
+                  : isInitialized
+                  ? "Continue with Google"
+                  : "Google Auth Error"}
+              </button>
+            )}
 
             {/* Sign Up Link */}
             <div className="text-center mt-2">
