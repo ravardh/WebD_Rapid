@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
-  const [isActive, setIsActive] = useState("home");
+  const { user, islogin } = useAuth();
+  
+  const location = useLocation().pathname.slice(1);
 
-  const location = useLocation().pathname;   
+  const [isActive, setIsActive] = useState(location);
 
   const handleThemeChange = (e) => {
     setTheme(e.target.value);
@@ -16,13 +19,13 @@ const Navbar = () => {
     <>
       <div
         className={`${
-          location !== "/chat" ? "sticky top-0 z-99" : ""
+          location !== "chat" ? "sticky top-0 z-99" : ""
         } bg-base-100 text-base-content flex justify-between items-center p-4`}
       >
         <Link
           to="/"
           className="font-bold text-3xl font-sans hover:text-primary-focus transition-colors"
-          onClick={() => setIsActive("home")}
+          onClick={() => setIsActive("")}
         >
           ChatKro
         </Link>
@@ -32,9 +35,9 @@ const Navbar = () => {
             <Link
               to="/"
               className={`cursor-pointer hover:text-primary-focus transition-colors font-sans ${
-                isActive === "home" ? "text-accent" : ""
+                isActive === "" ? "text-accent" : ""
               }`}
-              onClick={() => setIsActive("home")}
+              onClick={() => setIsActive("")}
             >
               Home
             </Link>

@@ -1,14 +1,18 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { FcGoogle } from "react-icons/fc";
 import api from "../config/api";
 import toast from "react-hot-toast";
 import { useGoogleAuth } from "../config/googleAuth";
+import { useAuth } from "../contexts/AuthContext";
 
 const LoginPage = () => {
   const { theme } = useTheme();
+  const { setUser, islogin, setIsLogin } = useAuth();
   const { isLoading, error, isInitialized, signInWithGoogle } = useGoogleAuth();
+
+  const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -30,6 +34,10 @@ const LoginPage = () => {
     try {
       const res = await api.post("/auth/login", loginData);
       toast.success(res.data.message);
+      sessionStorage.setItem("chatUser",JSON.stringify(res.data.data));
+      setUser(res.data.data);
+      setIsLogin(true);
+      navigate("/chat");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     }
@@ -40,6 +48,10 @@ const LoginPage = () => {
       console.log("Google login success:", userData);
       const res = await api.post("/auth/googleLogin", userData);
       toast.success(res.data.message);
+      sessionStorage.setItem("chatUser", JSON.stringify(res.data.data));
+      setUser(res.data.data);
+      setIsLogin(true);
+      navigate("/chat");
     } catch (error) {
       console.error("Google login error:", error);
       toast.error("Google login failed. Please try again.");
@@ -54,6 +66,10 @@ const LoginPage = () => {
   const handleGoogleSignIn = () => {
     signInWithGoogle(handleGoogleSuccess, handleGoogleFailure);
   };
+
+  useEffect(() => {
+    islogin && navigate("/chat");
+  });
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import AuthRouter from "./src/router/authRouter.js";
+import UserRouter from "./src/router/userRouter.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 app.use("/auth", AuthRouter);
+app.use("/user", UserRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Server Connected" });

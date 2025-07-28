@@ -22,7 +22,7 @@ export const Register = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const profilePicUrl = `https://placeholder.com/600x400?text=${fullName
+    const profilePicUrl = `https://placehold.co/600x400?text=${fullName
       .charAt(0)
       .toUpperCase()}`;
 
@@ -72,7 +72,7 @@ export const Login = async (req, res, next) => {
 
     await generateToken(user._id, res);
 
-    res.json({ message: "User logged in successfully", user });
+    res.json({ message: "User logged in successfully", data: user });
   } catch (error) {
     next(error);
   }
@@ -131,7 +131,7 @@ export const googleLogin = async (req, res, next) => {
       }
 
       await generateToken(newUser._id, res);
-      res.json({ message: "User logged in successfully", newUser });
+      res.json({ message: "User logged in successfully", data: newUser });
     } else if (existingUser.type === "normalUser") {
       console.log("Upgrading existing user to Google user");
 
@@ -147,7 +147,7 @@ export const googleLogin = async (req, res, next) => {
 
       await generateToken(upgradeUser._id, res);
 
-      res.json({ message: "User logged in successfully", upgradeUser });
+      res.json({ message: "User logged in successfully", data: upgradeUser });
     } else {
       console.log("User already exists with Google login");
 
@@ -161,7 +161,7 @@ export const googleLogin = async (req, res, next) => {
 
       await generateToken(existingUser._id, res);
 
-      res.json({ message: "User logged in successfully", existingUser });
+      res.json({ message: "User logged in successfully", data: existingUser });
     }
   } catch (error) {
     next(error);
