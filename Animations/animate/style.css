@@ -45,6 +45,7 @@ body {
         transform: rotate(360deg) translateX(100px) rotate(-360deg);
     }
 }
+
 @keyframes rotateCircle {
     0% {
         transform: translate(100px, 0) rotate(0deg);
@@ -62,6 +63,7 @@ body {
         transform: translate(100px, 0) rotate(360deg);
     }
 }
+
 @keyframes Aadi {
   0% {
     top: 0;
