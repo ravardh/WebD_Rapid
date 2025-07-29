@@ -1,0 +1,76 @@
+body {
+  display: flex;
+  justify-content: space-around;
+}
+.ab {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#a:hover {
+  width: 500px;
+  transition-property: width;
+  transition-duration: 3s;
+  transition-timing-function: linear;
+  transition-delay: 1s;
+}
+
+#b:hover {
+  width: 500px;
+  transition: width 3s ease 1s;
+}
+
+#c:hover {
+  width: 500px;
+  transition-property: width;
+  transition-duration: 3s;
+  transition-timing-function: ease-in;
+}
+
+#d:hover {
+  width: 500px;
+  transition-property: width;
+  transition-duration: 3s;
+  transition-timing-function: ease-out;
+}
+
+#e:hover {
+  width: 500px;
+  transition-property: width;
+  transition-duration: 3s;
+  transition-timing-function: ease-in-out;
+}
+
+#menu {
+  border: 1px solid #000;
+  padding: 5px;
+}
+
+#listDIV {
+  
+  background: yellowgreen;
+  height: 0px;
+  overflow: hidden;
+}
+
+#ul {
+  list-style: none;
+  padding: 0 5px;
+}
+
+#main:hover {
+  #listDIV {
+    height: 120px;
+    transition: height 0.32s;
+    border: 1px solid #000;
+  }
+}
+
+.navbar{
+    display: flex;
+    gap:10px
+}

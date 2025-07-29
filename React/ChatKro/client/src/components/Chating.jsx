@@ -3,153 +3,11 @@ import { useAuth } from "../contexts/AuthContext";
 import api from "../config/api";
 import { TbMessageHeart } from "react-icons/tb";
 
-const dummySender = "64e8c0a5f01c6a1234567890";
-const dummyReceiver = "64e8c0a5f01c6a0987654321";
-const chats = [
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Hey!",
-    timestamp: "2025-07-28T12:01:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Hi! What's up?",
-    timestamp: "2025-07-28T12:02:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Just working on a new project.",
-    timestamp: "2025-07-28T12:03:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Oh nice, what kind?",
-    timestamp: "2025-07-28T12:04:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "A chat app with MERN stack.",
-    timestamp: "2025-07-28T12:05:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Sounds cool!",
-    timestamp: "2025-07-28T12:06:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Thanks 😄",
-    timestamp: "2025-07-28T12:07:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Need any help?",
-    timestamp: "2025-07-28T12:08:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Maybe with real-time features.",
-    timestamp: "2025-07-28T12:09:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Sure! I’ve done that with Socket.io.",
-    timestamp: "2025-07-28T12:10:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Perfect! I’ll ping you soon.",
-    timestamp: "2025-07-28T12:11:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Looking forward to it!",
-    timestamp: "2025-07-28T12:12:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Do you have any reusable components?",
-    timestamp: "2025-07-28T12:13:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Yes, will share the repo.",
-    timestamp: "2025-07-28T12:14:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Awesome, thanks!",
-    timestamp: "2025-07-28T12:15:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "No problem at all.",
-    timestamp: "2025-07-28T12:16:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Let’s deploy it soon.",
-    timestamp: "2025-07-28T12:17:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Yeah, use Render or Vercel?",
-    timestamp: "2025-07-28T12:18:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Let’s try Vercel first.",
-    timestamp: "2025-07-28T12:19:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Alright. Let’s push code tonight.",
-    timestamp: "2025-07-28T12:20:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "Sure, catch you later!",
-    timestamp: "2025-07-28T12:21:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a0987654321",
-    receiverId: "64e8c0a5f01c6a1234567890",
-    text: "Bye 👋",
-    timestamp: "2025-07-28T12:22:00Z",
-  },
-  {
-    senderId: "64e8c0a5f01c6a1234567890",
-    receiverId: "64e8c0a5f01c6a0987654321",
-    text: "👋",
-    timestamp: "2025-07-28T12:23:00Z",
-  },
-];
-
 const Chating = ({ selectedFriend }) => {
   const { user } = useAuth();
   const [currentFriend, setCurrentFriend] = useState("");
   const [message, setMessage] = useState("");
+  const [chats, setChats] = useState("-- No Messages --");
 
   const fetchCurrentUser = async () => {
     try {
@@ -169,9 +27,42 @@ const Chating = ({ selectedFriend }) => {
     }
   }, [selectedFriend]); // Add selectedFriend as dependency
 
-  const handleSendMessage = () => {
-    console.log("Sending Message", message);
+  const handleSendMessage = async () => {
+    try {
+      const messagePack = {
+        senderId: user._id,
+        receiverId: selectedFriend,
+        message: message,
+      };
+      console.log(message);
+      const res = await api.post("/user/send", messagePack);
+      console.log(res.data.message, res.data.text);
+      setMessage("");
+      receiveMessages();
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const receiveMessages = async () => {
+    try {
+      const res = await api.get(`/user/receive/${selectedFriend}`);
+      setChats(res.data.data);
+    } catch (error) {
+      setChats("-- No Messages --");
+    }
+  };
+
+  useEffect(() => {
+    if (selectedFriend) {
+      const interval = setInterval(() => {
+        receiveMessages();
+      }, 2000); // Poll every 2 seconds
+
+      // Cleanup interval on unmount or when selectedFriend changes
+      return () => clearInterval(interval);
+    }
+  }, [selectedFriend]); // Only re-run when selectedFriend changes
 
   if (!selectedFriend) {
     return (
@@ -217,18 +108,24 @@ const Chating = ({ selectedFriend }) => {
           {/* Chat Messages */}
           <div className="h-[90%] overflow-y-auto p-4 space-y-3 text-base-content flex flex-col">
             {/* Example Messages */}
-            {chats.map((chat, index) => (
-              <div
-                className={`${
-                  chat.senderId === dummySender
-                    ? "bg-secondary text-secondary-content self-end"
-                    : "bg-primary text-primary-content self-start"
-                } p-3 rounded-lg max-w-[70%]`}
-                key={index}
-              >
-                {chat.text}
+            {chats !== "-- No Messages --" ? (
+              chats.map((chat, index) => (
+                <div
+                  className={`${
+                    chat.senderId === user._id
+                      ? "bg-secondary text-secondary-content self-end"
+                      : "bg-primary text-primary-content self-start"
+                  } p-3 rounded-lg max-w-[70%]`}
+                  key={index}
+                >
+                  {chat.text}
+                </div>
+              ))
+            ) : (
+              <div className="text-error p-3 rounded-lg h-full flex justify-center items-center">
+                {chats}
               </div>
-            ))}
+            )}
           </div>
 
           {/* Message Input Area */}
