@@ -7,6 +7,9 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import AuthRouter from "./src/router/authRouter.js";
 import UserRouter from "./src/router/userRouter.js";
+import http from "http";
+import { Server } from "socket.io";
+import { webSocket } from "./src/webSocket.js";
 
 const app = express();
 
@@ -29,9 +32,21 @@ app.use((err, req, res, next) => {
     .json({ message: err.message || "Internal Server Error" });
 });
 
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+webSocket(io);
+
 const Port = process.env.PORT || 5000;
 
-app.listen(Port, "0.0.0.0", async () => {
+server.listen(Port, "0.0.0.0", async () => {
   console.log("Server Started at", Port);
   try {
     await cloudinary.api.resources({ max_results: 1 });

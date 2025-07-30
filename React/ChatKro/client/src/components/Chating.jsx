@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import api from "../config/api";
 import { TbMessageHeart } from "react-icons/tb";
+import apiSocket from "../config/socket";
 
 const Chating = ({ selectedFriend }) => {
   const { user } = useAuth();
@@ -54,15 +55,30 @@ const Chating = ({ selectedFriend }) => {
   };
 
   useEffect(() => {
-    if (selectedFriend) {
-      const interval = setInterval(() => {
-        receiveMessages();
-      }, 2000); // Poll every 2 seconds
-
-      // Cleanup interval on unmount or when selectedFriend changes
-      return () => clearInterval(interval);
+    if (!user._id || !selectedFriend) {
+      return;
     }
-  }, [selectedFriend]); // Only re-run when selectedFriend changes
+
+    console.log(selectedFriend);
+    
+    apiSocket.emit("register", user._id);
+
+    return () => {
+      apiSocket.emit("unregister", user._id);
+    };
+  }, [selectedFriend]);
+
+  //Polling
+  // useEffect(() => {
+  //   if (selectedFriend) {
+  //     const interval = setInterval(() => {
+  //       receiveMessages();
+  //     }, 2000); // Poll every 2 seconds
+
+  //     // Cleanup interval on unmount or when selectedFriend changes
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [selectedFriend]); // Only re-run when selectedFriend changes
 
   if (!selectedFriend) {
     return (

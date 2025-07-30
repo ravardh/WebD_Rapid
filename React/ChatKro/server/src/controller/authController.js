@@ -99,18 +99,18 @@ export const googleLogin = async (req, res, next) => {
   try {
     const { id, email, imageUrl, name } = req.body;
     const existingUser = await User.findOne({ email });
-    console.log("Existing User:", existingUser);
-    console.log({ id, email, imageUrl, name });
+    // console.log("Existing User:", existingUser);
+    // console.log({ id, email, imageUrl, name });
     if (!existingUser) {
-      console.log("Creating new user for Google login");
+      // console.log("Creating new user for Google login");
 
       const profilePicUrl = imageUrl.split("=s96")[0] + "=s400-c";
       const hashGoogleID = await bcrypt.hash(id, 10);
       const user_Name = email.split("@")[0];
 
-      console.log("ProfilePicURL", profilePicUrl);
-      console.log("HashedGoogelId", hashGoogleID);
-      console.log("userName", user_Name);
+      // console.log("ProfilePicURL", profilePicUrl);
+      // console.log("HashedGoogelId", hashGoogleID);
+      // console.log("userName", user_Name);
 
       let newUser;
 
@@ -133,7 +133,7 @@ export const googleLogin = async (req, res, next) => {
       await generateToken(newUser._id, res);
       res.json({ message: "User logged in successfully", data: newUser });
     } else if (existingUser.type === "normalUser") {
-      console.log("Upgrading existing user to Google user");
+      // console.log("Upgrading existing user to Google user");
 
       const hashGoogleID = await bcrypt.hash(id, 10);
       const upgradeUser = await User.findByIdAndUpdate(
@@ -149,7 +149,7 @@ export const googleLogin = async (req, res, next) => {
 
       res.json({ message: "User logged in successfully", data: upgradeUser });
     } else {
-      console.log("User already exists with Google login");
+      // console.log("User already exists with Google login");
 
       const isMatch = await bcrypt.compare(id, existingUser.googleID);
 
