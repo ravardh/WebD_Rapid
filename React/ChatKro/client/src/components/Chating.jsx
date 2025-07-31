@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import api from "../config/api";
 import { TbMessageHeart } from "react-icons/tb";
@@ -8,7 +8,22 @@ const Chating = ({ selectedFriend }) => {
   const { user } = useAuth();
   const [currentFriend, setCurrentFriend] = useState("");
   const [message, setMessage] = useState("");
-  const [chats, setChats] = useState("-- No Messages --");
+  const [chats, setChats] = useState("");
+  const messageEndRef = useRef(null);
+
+  const handleKeyDown = async (e) => {
+    if (e.key === "Enter") {
+      await handleSendMessage();
+    }
+  };
+
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chats]);
 
   const fetchCurrentUser = async () => {
     try {
@@ -16,9 +31,13 @@ const Chating = ({ selectedFriend }) => {
       setCurrentFriend(res.data.data);
     } catch (error) {}
   };
-  const fetchMessages = () => {
+  const fetchMessages = async () => {
     try {
-    } catch (error) {}
+      const res = await api.get(`/user/receive/${selectedFriend}`);
+      setChats(res.data.data);
+    } catch (error) {
+      setChats("");
+    }
   };
 
   useEffect(() => {
@@ -26,33 +45,48 @@ const Chating = ({ selectedFriend }) => {
       fetchCurrentUser();
       fetchMessages();
     }
-  }, [selectedFriend]); // Add selectedFriend as dependency
+  }, [selectedFriend]);
 
   const handleSendMessage = async () => {
+    if (!message) return;
+
     try {
       const messagePack = {
         senderId: user._id,
         receiverId: selectedFriend,
-        message: message,
+        text: message,
+        timestamp: new Date().toISOString(),
       };
-      console.log(message);
       const res = await api.post("/user/send", messagePack);
-      console.log(res.data.message, res.data.text);
+
+      // console.log(res.data.message, res.data.text);
+      // setMessage("");
+      // receiveMessages();
+
+      //Socket Code
+
+      apiSocket.emit("send_Message", {
+        from: user._id,
+        to: selectedFriend,
+        message: message,
+        timestamp: messagePack.timestamp,
+      });
+
+      setChats((prev) => [...prev, { ...messagePack }]);
       setMessage("");
-      receiveMessages();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const receiveMessages = async () => {
-    try {
-      const res = await api.get(`/user/receive/${selectedFriend}`);
-      setChats(res.data.data);
-    } catch (error) {
-      setChats("-- No Messages --");
-    }
-  };
+  // const receiveMessages = async () => {
+  //   try {
+  //     const res = await api.get(`/user/receive/${selectedFriend}`);
+  //     setChats(res.data.data);
+  //   } catch (error) {
+  //     setChats("");
+  //   }
+  // };
 
   useEffect(() => {
     if (!user._id || !selectedFriend) {
@@ -60,13 +94,32 @@ const Chating = ({ selectedFriend }) => {
     }
 
     console.log(selectedFriend);
-    
+
     apiSocket.emit("register", user._id);
 
+    // Define the handler so we can remove it later
+    const handleReceiveMessage = (msgPacket) => {
+      if (msgPacket.from === selectedFriend) {
+        setChats((prev) => [
+          ...prev,
+          {
+            ...msgPacket,
+            senderId: msgPacket.from,
+            receiverId: msgPacket.to,
+            text: msgPacket.message,
+            timestamp: msgPacket.timestamp,
+          },
+        ]);
+      }
+    };
+
+    apiSocket.on("receive_Message", handleReceiveMessage);
+
     return () => {
+      apiSocket.off("receive_Message", handleReceiveMessage); // Remove the listener!
       apiSocket.emit("unregister", user._id);
     };
-  }, [selectedFriend]);
+  }, [user._id, selectedFriend]);
 
   //Polling
   // useEffect(() => {
@@ -79,6 +132,23 @@ const Chating = ({ selectedFriend }) => {
   //     return () => clearInterval(interval);
   //   }
   // }, [selectedFriend]); // Only re-run when selectedFriend changes
+const formatToISTDateTime = (utcTimestamp) => {
+  const options = {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+
+  const formatted = new Date(utcTimestamp).toLocaleString("en-GB", options);
+
+  return formatted.replace(",", ""); // Remove comma between date and time
+}
+
+
 
   if (!selectedFriend) {
     return (
@@ -124,24 +194,26 @@ const Chating = ({ selectedFriend }) => {
           {/* Chat Messages */}
           <div className="h-[90%] overflow-y-auto p-4 space-y-3 text-base-content flex flex-col">
             {/* Example Messages */}
-            {chats !== "-- No Messages --" ? (
+            {chats.length > 0 ? (
               chats.map((chat, index) => (
                 <div
                   className={`${
                     chat.senderId === user._id
                       ? "bg-secondary text-secondary-content self-end"
                       : "bg-primary text-primary-content self-start"
-                  } p-3 rounded-lg max-w-[70%]`}
+                  } p-2 rounded-lg max-w-[70%]`}
                   key={index}
                 >
                   {chat.text}
+                  <p className="text-xs opacity-50 flex justify-end">{formatToISTDateTime(chat.timestamp)}</p>
                 </div>
               ))
             ) : (
               <div className="text-error p-3 rounded-lg h-full flex justify-center items-center">
-                {chats}
+                --No Messages--
               </div>
             )}
+            <div ref={messageEndRef}></div>
           </div>
 
           {/* Message Input Area */}
@@ -151,6 +223,7 @@ const Chating = ({ selectedFriend }) => {
               name="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Type a message..."
               className="input input-bordered flex-1"
             />
