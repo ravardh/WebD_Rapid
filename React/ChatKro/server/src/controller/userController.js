@@ -1,3 +1,4 @@
+import FriendList from "../model/friendModel.js";
 import Message from "../model/messageModel.js";
 import User from "../model/userModel.js";
 
@@ -34,7 +35,7 @@ export const sendMessage = async (req, res, next) => {
       senderId,
       receiverId,
       text,
-      timestamp:timestamp,
+      timestamp: timestamp,
     });
 
     res
@@ -58,6 +59,40 @@ export const receiveMessage = async (req, res, next) => {
     }).sort({ timestamp: 1 });
 
     res.status(200).json({ message: "All Message Fetched", data: chats });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const AddFriend = async (req, res, next) => {
+  try {
+    const user1 = req.user._id;
+    const user2 = req.params.id;
+
+    await FriendList.create({
+      user1,
+      user2,
+      status: "requested",
+    });
+
+    res.status(200).json({ message: "Friend Request Sent" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const FriendRequests = async (req, res, next) => {
+  try {
+    const userID = req.user._id;
+
+    const requests =
+      (await FriendList.find({
+        user2: userID,
+        status: "requested",
+      }).populate("user2")) || [];
+    res
+      .status(200)
+      .json({ message: "Friend Requests Fetched", data: requests });
   } catch (error) {
     next(error);
   }

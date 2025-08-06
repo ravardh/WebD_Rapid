@@ -3,12 +3,14 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import api from "../config/api";
 import Chating from "../components/chating";
+import AllUser from "../components/AllUser";
 
 const ChatPage = () => {
   const { user, islogin } = useAuth();
   const navigate = useNavigate();
   const [chatUser, setChatUser] = useState("");
   const [selectedFriend, setSelectedFriend] = useState("");
+  const [allUserModalOpen, setIsAllUserModalOpen] = useState(false);
 
   const fetchAllUser = async () => {
     try {
@@ -40,7 +42,7 @@ const ChatPage = () => {
                       "Main user image failed to load:",
                       user.profilePic
                     );
-                    e.target.src = `https://placehold.co/600x400/?text=${friends.fullName
+                    e.target.src = `https://placehold.co/600x400/?text=${user.fullName
                       .charAt(0)
                       .toUpperCase()}`;
                   }}
@@ -55,12 +57,16 @@ const ChatPage = () => {
                   <h2 className="text-md text-base-content">Chats</h2>
                 </div>
               </div>
-              {/* <button className="py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700">
+              <button
+                className="py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
+                onClick={() => setIsAllUserModalOpen(true)}
+              >
                 New Chat
-              </button> */}
+              </button>
             </div>
             <div className="flex-1 overflow-y-auto">
               {/* Example chat list */}
+              <div>Recent Chats</div>
               <ul>
                 {chatUser &&
                   chatUser.map((friends, index) => (
@@ -107,6 +113,11 @@ const ChatPage = () => {
           <Chating selectedFriend={selectedFriend} />
         </div>
       </div>
+
+      <AllUser
+        isOpen={allUserModalOpen}
+        onClose={() => setIsAllUserModalOpen(false)}
+      />
     </>
   );
 };
